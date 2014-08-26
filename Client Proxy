@@ -1,0 +1,17 @@
+public class ClientProxy extends CommonProxy {
+	
+	public void registerRenderThings() {
+		//BloodMixer
+		TileEntitySpecialRenderer render= new RenderBloodMixer();
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBloodMixer.class, render);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MainClass.BloodMixer), new ItemRenderBloodMixer(render, new TileEntityBloodMixer()));
+		
+		//Entity Assassin		
+		RenderingRegistry.registerEntityRenderingHandler(EntityAssassin.class, new RenderAssassin(new ModelAssassin(), 0.3F));
+		RenderingRegistry.registerEntityRenderingHandler(EntityVampire.class, new RenderVampire(new ModelVampire(), 0.3F));
+}
+	
+public void registerTileEntitySpecialRenderer() {
+		
+	}
+}
