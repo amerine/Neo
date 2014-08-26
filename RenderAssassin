@@ -1,0 +1,29 @@
+public class RenderAssassin extends RenderBiped {
+	
+	
+	private static final ResourceLocation texture = new ResourceLocation("vampz:textures/mobs/Assassin.png");
+	
+	protected ModelAssassin modelEntity;
+
+	public RenderAssassin(ModelBiped modelbase, float f2) {
+		super(modelbase, f2);
+		modelEntity = ((ModelAssassin) mainModel);
+	}
+
+	public void renderAssassin(EntityAssassin entity, double x, double y, double z, float u, float v) {
+		super.doRender(entity, x, y, z, u, v);
+	}
+	
+	public void doRenderLiving(EntityLiving entityLiving, double x, double y, double z, float u, float v) {
+		renderAssassin((EntityAssassin)entityLiving, x, y, z, u, v);
+	}
+	
+	public void doRenderLiving(Entity entity, double x, double y, double z, float u, float v) {
+		renderAssassin((EntityAssassin)entity, x, y, z, u, v);
+	}
+	
+	@Override
+	protected ResourceLocation getEntityTexture(Entity var1) {
+		return texture;
+	}
+}
