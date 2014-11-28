@@ -19,11 +19,11 @@ public class BottleOfBloodClass extends ItemFood {
 		setCreativeTab(MainClass.VampZItems);
 
 	} 
-	public EnumAction getItemUseAction(ItemStack p_77661_1_)
+	public EnumAction getItemUseAction(ItemStack item)
 	{
 	    return EnumAction.drink;
 	    }
-	public int getMaxItemUseDuration(ItemStack p_77626_1_)
+	public int getMaxItemUseDuration(ItemStack item)
     {
         return 16;
     }
