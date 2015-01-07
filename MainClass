@@ -1,0 +1,538 @@
+package com.neosup.VampZ;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.EnumHelper;
+
+import com.neosup.VampZ.CreativeTabs.VampZBlocks;
+import com.neosup.VampZ.CreativeTabs.VampZCombat;
+import com.neosup.VampZ.CreativeTabs.VampZItems;
+import com.neosup.VampZ.CreativeTabs.VampZTools;
+import com.neosup.VampZ.armor.BloodArmorClass;
+import com.neosup.VampZ.armor.InvisArmorClass;
+import com.neosup.VampZ.armor.MythorArmorClass;
+import com.neosup.VampZ.armor.UndeadArmorClass;
+import com.neosup.VampZ.biome.BiomesVZ;
+import com.neosup.VampZ.block.BloodDirtClass;
+import com.neosup.VampZ.block.BloodGrass;
+import com.neosup.VampZ.block.BloodMixer;
+import com.neosup.VampZ.block.BloodOven;
+import com.neosup.VampZ.block.BloodbrickClass;
+import com.neosup.VampZ.block.Bloodshardore;
+import com.neosup.VampZ.block.BloodstoneClass;
+import com.neosup.VampZ.block.BloodstoneShardore;
+import com.neosup.VampZ.block.Bloodycoalore;
+import com.neosup.VampZ.block.BloodycobblestoneClass;
+import com.neosup.VampZ.block.CorruptedDirt;
+import com.neosup.VampZ.block.ExpBlockClass;
+import com.neosup.VampZ.block.HolyBlock;
+import com.neosup.VampZ.block.Mythorore;
+import com.neosup.VampZ.block.SafeHolyBlock;
+import com.neosup.VampZ.entity.EntityAssassin;
+import com.neosup.VampZ.entity.EntityChief;
+import com.neosup.VampZ.entity.EntityCorruptedWerewolf;
+import com.neosup.VampZ.entity.EntityForestHunter;
+import com.neosup.VampZ.entity.EntityHuman;
+import com.neosup.VampZ.entity.EntityHunter;
+import com.neosup.VampZ.entity.EntityInvisibleMan;
+import com.neosup.VampZ.entity.EntityMobHands;
+import com.neosup.VampZ.entity.EntityPotionHunter;
+import com.neosup.VampZ.entity.EntityUndeadWolf;
+import com.neosup.VampZ.entity.EntityVampire;
+import com.neosup.VampZ.entity.EntityVarmpz;
+import com.neosup.VampZ.entity.EntityWerewolf;
+import com.neosup.VampZ.generation.GenerationClass;
+import com.neosup.VampZ.handler.BloodSmeltingRecipe;
+import com.neosup.VampZ.handler.DropHandler;
+import com.neosup.VampZ.handler.EntityHandler;
+import com.neosup.VampZ.handler.FuelHandler;
+import com.neosup.VampZ.handler.GuiHandler;
+import com.neosup.VampZ.items.BloodApple;
+import com.neosup.VampZ.items.BloodcoalClass;
+import com.neosup.VampZ.items.BloodingotClass;
+import com.neosup.VampZ.items.BloodingotmixClass;
+import com.neosup.VampZ.items.Bloodshard;
+import com.neosup.VampZ.items.BottleOfBloodClass;
+import com.neosup.VampZ.items.CorruptedBloodClass;
+import com.neosup.VampZ.items.CorruptedEssenceClass;
+import com.neosup.VampZ.items.InvisClothClass;
+import com.neosup.VampZ.items.Mythoringot;
+import com.neosup.VampZ.items.RawMythorOre;
+import com.neosup.VampZ.proxy.CommonProxy;
+import com.neosup.VampZ.tileentity.TileEntityBloodMixer;
+import com.neosup.VampZ.tileentity.TileEntityBloodOven;
+import com.neosup.VampZ.tools.Assassinblade;
+import com.neosup.VampZ.tools.Bloodaxe;
+import com.neosup.VampZ.tools.Bloodhoe;
+import com.neosup.VampZ.tools.Bloodpickaxe;
+import com.neosup.VampZ.tools.Bloodshovel;
+import com.neosup.VampZ.tools.Bloodsword;
+import com.neosup.VampZ.tools.Huntingknife;
+import com.neosup.VampZ.tools.InvisibleSword;
+import com.neosup.VampZ.tools.Mythoraxe;
+import com.neosup.VampZ.tools.Mythorhoe;
+import com.neosup.VampZ.tools.Mythorpickaxe;
+import com.neosup.VampZ.tools.Mythorshovel;
+import com.neosup.VampZ.tools.Mythorsword;
+import com.neosup.VampZ.tools.Undeadaxe;
+import com.neosup.VampZ.tools.Undeadhoe;
+import com.neosup.VampZ.tools.Undeadpickaxe;
+import com.neosup.VampZ.tools.Undeadshovel;
+import com.neosup.VampZ.tools.Undeadsword;
+
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
+
+
+@Mod(modid = MainClass.MODID, name = MainClass.NAME, version = MainClass.VERSION)
+
+public class MainClass {
+	
+	
+	
+	//Unique ID for Armor's 
+	public static int BloodhelmetID;
+	public static int BloodchestplateID;
+	public static int BloodleggingsID;
+	public static int BloodbootsID;
+	
+	public static int MythorhemletID;
+	public static int MythorchestplateID;
+	public static int MythorleggingsID;
+	public static int MythorbootsID;
+	
+	public static int InvishelmetID;
+	public static int InvischestplateID;
+	public static int InvisleggingsID;
+	public static int InvisbootsID;
+	
+	public static int UndeadhelmetID;
+	public static int UndeadchestplateID;
+	public static int UndeadleggingsID;
+	public static int UndeadbootsID;
+	
+	public static final int guiIDBloodOven = 0;
+	public static final int guiIDBloodMixer = 1;
+	
+	@SidedProxy(clientSide = "com.neosup.VampZ.proxy.ClientProxy", serverSide = "com.neosup.VampZ.proxy.CommonProxy")
+	public static CommonProxy vampzProxy;
+	
+
+	//Mod info 
+	public static final String MODID = "vampz"; 
+	public static final String NAME = "VampZ";
+	public static final String VERSION = "WIP 1.8";
+	
+	//Smelts Blocks
+	public static void addBloodSmelting(Block inputB, ItemStack output, float xp)
+    {
+		BloodSmeltingRecipe.smelting().func_151393_a(inputB, output, xp);
+    }
+	
+	//Smelts Items
+	private static void addBloodSmelting(Item inputI, ItemStack item, float xp) {
+		
+		BloodSmeltingRecipe.smelting().func_151396_a(inputI, item, xp);
+	}
+	
+	
+	@Instance(MODID) 
+	public static MainClass instance;
+	
+	@EventHandler
+	public void PreInit(FMLPreInitializationEvent preEvent) {
+		 MinecraftForge.EVENT_BUS.register(new DropHandler());
+		 EntityHandler.registerMonsters(EntityAssassin.class, "Vampire Assassin");
+		 EntityHandler.registerMonsters(EntityVampire.class, "Vampire");
+		 EntityHandler.registerMonsters(EntityMobHands.class, "MobHands");
+		 EntityHandler.registerMonsters(EntityUndeadWolf.class, "UndeadWolf");
+		 EntityHandler.registerMonsters(EntityInvisibleMan.class, "InvisibleMan");
+		 EntityHandler.registerMonsters(EntityWerewolf.class, "Werewolf");
+		 EntityHandler.registerMonsters(EntityCorruptedWerewolf.class, "CorruptedWerewolf");
+		 EntityHandler.registerMonsters(EntityVarmpz.class, "Varmpz");
+		 EntityHandler.registerMonsters(EntityHuman.class, "Human");
+		 EntityHandler.registerMonsters(EntityHunter.class, "Hunter");
+		 EntityHandler.registerMonsters(EntityPotionHunter.class, "PotionHunter");
+		 EntityHandler.registerMonsters(EntityForestHunter.class, "ForestHunter");
+		 EntityHandler.registerMonsters(EntityChief.class, "Chief");
+		 BiomesVZ.init();
+		 vampzProxy.registerItemRenderers();
+		 
+	}
+	
+	//Creative Tabs 
+	public static CreativeTabs VampZBlocks = new VampZBlocks(CreativeTabs.getNextID(), "VampZBlocks"); 
+	public static CreativeTabs VampZItems = new VampZItems(CreativeTabs.getNextID(), "VampZItems");
+	public static CreativeTabs VampZCombat = new VampZCombat(CreativeTabs.getNextID(), "VampZCombat");
+	public static CreativeTabs VampZTools = new VampZTools(CreativeTabs.getNextID(), "VampZTools");
+	
+	//Material 
+	//Tools Material
+	public static ToolMaterial BloodMaterial = EnumHelper.addToolMaterial("BloodMaterial", 3, 800, 8F, 5F, 6);
+	public static ToolMaterial MythorMaterial = EnumHelper.addToolMaterial("MyhorMaterial", 3, 400, 10F, 4F, 12);
+	public static ToolMaterial UndeadMaterial = EnumHelper.addToolMaterial("UndeadMaterial", 3, 850, 9F, 6F, 1);
+	public static ToolMaterial AssassinMaterial = EnumHelper.addToolMaterial("AssassinMaterial", 1, 300, 1F, 6.5F, 12);
+	public static ToolMaterial InvisibleMaterial = EnumHelper.addToolMaterial("InvisibleMaterial", 2, 500, 2F, 3F, 15);
+	
+	//Armor Material
+	public static  ArmorMaterial BloodArmorMaterial = EnumHelper.addArmorMaterial("BloodArmor", 33, new int[] {3, 7, 6, 3}, 6);
+	public static ArmorMaterial MythorArmorMaterial = EnumHelper.addArmorMaterial("MyhthorArmor",44, new int[] {4, 8, 7, 4}, 12);
+	public static ArmorMaterial InvisArmorMaterial = EnumHelper.addArmorMaterial("InvisArmor",5, new int[] {1, 3, 2, 1}, 15);
+	public static ArmorMaterial UndeadArmorMaterial = EnumHelper.addArmorMaterial("UndeadArmor",33, new int[] {5, 9, 8, 5}, 1);
+	
+	//Generation 
+	public static GenerationClass VampZWorldGen = new GenerationClass();
+	
+	//Blocks
+	public static Block Bloodstone = new BloodstoneClass(Material.rock).setBlockName("Bloodstone");
+	public static Block BloodBrick = new BloodbrickClass(Material.rock).setBlockName("Bloodbrick");
+	public static Block BloodyCobblestone = new BloodycobblestoneClass(Material.rock).setBlockName("Bloodycobblestone");
+	public static Block BloodDirt = new BloodDirtClass(Material.ground).setBlockName("BloodDirt").setStepSound(Block.soundTypeGravel);
+	public static Block Bloodycoalore = new Bloodycoalore(Material.rock).setBlockName("Bloodycoalore");
+	public static Block Mythorore = new Mythorore(Material.rock).setBlockName("Mythorore");
+	public static Block Bloodshardore = new Bloodshardore(Material.rock).setBlockName("Bloodshardore");
+	public static Block ExpBlock	 = new ExpBlockClass(Material.rock).setBlockName("ExpBlock");
+	public static Block BloodstoneShardore = new BloodstoneShardore(Material.rock).setBlockName("BloodstoneShardore");
+	public static Block BloodOvenIdle = new BloodOven(false).setBlockName("BloodOvenIdle").setBlockName("BloodOvenIdle").setCreativeTab(VampZBlocks); 
+	public static Block BloodOvenActive = new BloodOven(true).setBlockName("BloodOvenActive").setBlockName("BloodOvenActive");
+	public static Block BloodMixer = new BloodMixer(Material.wood).setBlockName("BloodMixer").setCreativeTab(VampZBlocks).setBlockTextureName("BloodMixer");
+	public static Block CorruptedDirt = new CorruptedDirt(Material.ground).setBlockName("CorruptedDirt").setStepSound(Block.soundTypeGravel);
+	public static Block BloodGrass = new BloodGrass(Material.grass).setBlockName("BloodGrass").setStepSound(Block.soundTypeGravel);
+	public static Block HolyBlock = new HolyBlock(Material.rock).setBlockName("HolyBlock").setStepSound(Block.soundTypeStone);
+	public static Block SafeHolyBlock = new SafeHolyBlock(Material.rock).setBlockName("SafeHolyBlock").setStepSound(Block.soundTypeStone);
+	
+
+	//Items
+	public static Item Bloodcoal = new BloodcoalClass().setUnlocalizedName("Bloodcoal");
+	public static Item Bloodingot = new BloodingotClass().setUnlocalizedName("Bloodingot");
+	public static Item Bloodingotmix = new BloodingotmixClass().setUnlocalizedName("Bloodingotmix");
+	public static Item Mythoringot = new Mythoringot().setUnlocalizedName("Mythoringot");
+	public static Item RawMythorOre = new RawMythorOre().setUnlocalizedName("RawMythorOre");
+	public static Item Bloodshard = new Bloodshard().setUnlocalizedName("Bloodshard");
+	public static Item InvisCloth = new InvisClothClass().setUnlocalizedName("InvisCloth");
+	public static Item CorruptedEssence = new CorruptedEssenceClass().setUnlocalizedName("CorruptedEssence");
+	
+	//Blood sorts 
+	public static Item CorruptedBlood = new CorruptedBloodClass(4, 0.4F, false).setAlwaysEdible().setUnlocalizedName("CorruptedBlood").setTextureName(MainClass.MODID + ":CorruptedBlood");
+	public static Item Blood = new BottleOfBloodClass(4, 0.4F, false).setAlwaysEdible().setUnlocalizedName("Blood").setTextureName(MainClass.MODID + ":Blood");
+	public static Item CowBlood = new BottleOfBloodClass(4, 0.4F, false).setAlwaysEdible().setUnlocalizedName("CowBlood").setTextureName(MainClass.MODID + ":CowBlood");
+	public static Item SheepBlood = new BottleOfBloodClass(4, 0.4F, false).setAlwaysEdible().setUnlocalizedName("SheepBlood").setTextureName(MainClass.MODID + ":SheepBlood");
+	public static Item ChickenBlood = new BottleOfBloodClass(4, 0.4F, false).setAlwaysEdible().setUnlocalizedName("ChickenBlood").setTextureName(MainClass.MODID + ":ChickenBlood");
+	
+	//Food
+	public static Item Bloodfruit = new ItemFood(6, 0.6F, false).setUnlocalizedName("Bloodfruit").setTextureName("vampz:Bloodfruit").setCreativeTab(VampZItems);
+	public static Item Cookedbloodbeef = new ItemFood(9, 0.8F, false).setUnlocalizedName("Cookedbloodbeef").setTextureName("vampz:Cookedbloodbeef").setCreativeTab(VampZItems);
+	public static Item Cookedbloodchicken = new ItemFood(7, 0.8F, false).setUnlocalizedName("Cookedbloodchicken").setTextureName("vampz:Cookedbloodchicken").setCreativeTab(VampZItems);
+	public static Item Cookedbloodporkchop = new ItemFood(9, 0.8F, false).setUnlocalizedName("Cookedbloodporkchop").setTextureName("vampz:Cookedbloodporkchop").setCreativeTab(VampZItems);
+	public static Item Bloodapple = new BloodApple(4, 0.6F, false).setAlwaysEdible().setUnlocalizedName("Bloodapple").setTextureName("vampz:Bloodapple").setCreativeTab(VampZItems);
+	public static Item BottleOfBlood = new BottleOfBloodClass(4, 0.4F, false).setAlwaysEdible().setUnlocalizedName("BottleOfBlood").setTextureName("vampz:BottleOfBlood").setCreativeTab(VampZItems);;
+	
+	//Tools 
+	public static Item Bloodaxe = new Bloodaxe(BloodMaterial).setUnlocalizedName("Bloodaxe");
+	public static Item Bloodpickaxe = new Bloodpickaxe(BloodMaterial).setUnlocalizedName("Bloodpickaxe");
+	public static Item Bloodsword = new Bloodsword(BloodMaterial).setUnlocalizedName("Bloodsword");
+	public static Item Bloodhoe = new Bloodhoe(BloodMaterial).setUnlocalizedName("Bloodhoe");
+	public static Item Bloodshovel = new Bloodshovel(BloodMaterial).setUnlocalizedName("Bloodshovel");
+	public static Item Mythoraxe = new Mythoraxe(MythorMaterial).setUnlocalizedName("Mythoraxe");
+	public static Item Mythorpickaxe = new Mythorpickaxe(MythorMaterial).setUnlocalizedName("Mythorpickaxe");
+	public static Item Mythorsword = new Mythorsword(MythorMaterial).setUnlocalizedName("Mythorsword");
+	public static Item Mythorhoe = new Mythorhoe(MythorMaterial).setUnlocalizedName("Mythorhoe");
+	public static Item Mythorshovel = new Mythorshovel(MythorMaterial).setUnlocalizedName("Mythorshovel");
+	public static Item Undeadsword = new Undeadsword(UndeadMaterial).setUnlocalizedName("Undeadsword");
+	public static Item Undeadaxe = new Undeadaxe(UndeadMaterial).setUnlocalizedName("Undeadaxe");
+	public static Item Undeadhoe = new Undeadhoe(UndeadMaterial).setUnlocalizedName("Undeadhoe");
+	public static Item Undeadpickaxe = new Undeadpickaxe(UndeadMaterial).setUnlocalizedName("Undeadpickaxe");
+	public static Item Undeadshovel = new Undeadshovel(UndeadMaterial).setUnlocalizedName("Undeadshovel");
+	public static Item Assassinblade = new Assassinblade(AssassinMaterial).setUnlocalizedName("Assassinblade");
+	public static Item InvisibleSword = new InvisibleSword(InvisibleMaterial).setUnlocalizedName("InvisibleSword");
+	public static Item Huntingknife = new Huntingknife(AssassinMaterial).setUnlocalizedName("Huntingknife");
+
+	//Armor
+	public static Item Bloodhelmet = new BloodArmorClass(BloodArmorMaterial, BloodhelmetID, 0).setUnlocalizedName("Bloodhelmet");
+	public static Item Bloodchestplate = new BloodArmorClass(BloodArmorMaterial, BloodchestplateID, 1).setUnlocalizedName("Bloodchestplate");
+	public static Item Bloodleggings = new BloodArmorClass(BloodArmorMaterial, BloodleggingsID, 2).setUnlocalizedName("Bloodleggings");
+	public static Item Bloodboots = new BloodArmorClass(BloodArmorMaterial, BloodbootsID, 3).setUnlocalizedName("Bloodboots");
+	
+	public static Item Mythorhelmet = new MythorArmorClass(MythorArmorMaterial, MythorhemletID, 0).setUnlocalizedName("Mythorhelmet").setTextureName("vampz:Mythorhelmet");
+	public static Item Mythorchestplate = new MythorArmorClass(MythorArmorMaterial, MythorchestplateID, 1).setUnlocalizedName("Mythorchestplate").setTextureName("vampz:Mythorchestplate");
+	public static Item Mythorleggings = new MythorArmorClass(MythorArmorMaterial, MythorleggingsID, 2).setUnlocalizedName("Mythorleggings").setTextureName("vampz:Mythorleggings");
+	public static Item Mythorboots = new MythorArmorClass(MythorArmorMaterial, MythorbootsID, 3).setUnlocalizedName("Mythorboots").setTextureName("vampz:Mythorboots");
+	
+	public static Item Invishelmet = new InvisArmorClass(InvisArmorMaterial, InvishelmetID, 0).setUnlocalizedName("Invishelmet").setTextureName("vampz:InvisHelmet");
+	public static Item Invischestplate = new InvisArmorClass(InvisArmorMaterial, InvischestplateID, 1).setUnlocalizedName("Invischestplate").setTextureName("vampz:InvisChestplate");
+	public static Item Invisleggings = new InvisArmorClass(InvisArmorMaterial, InvisleggingsID, 2).setUnlocalizedName("Invisleggings").setTextureName("vampz:InvisLeggings");
+	public static Item Invisboots = new InvisArmorClass(InvisArmorMaterial, InvisbootsID, 3).setUnlocalizedName("Invisboots").setTextureName("vampz:InvisBoots");
+	
+	public static Item Undeadhelmet = new UndeadArmorClass(UndeadArmorMaterial, UndeadhelmetID, 0).setUnlocalizedName("Undeadhelmet");
+	public static Item Undeadchestplate = new UndeadArmorClass(UndeadArmorMaterial, UndeadchestplateID, 1).setUnlocalizedName("Undeadchestplate");
+	public static Item Undeadleggings = new UndeadArmorClass(UndeadArmorMaterial, UndeadleggingsID, 2).setUnlocalizedName("Undeadleggings");
+	public static Item Undeadboots = new UndeadArmorClass(UndeadArmorMaterial, UndeadbootsID, 3).setUnlocalizedName("Undeadboots");
+	
+	
+	public MainClass() {
+		
+		
+		//TODO Register
+		//Blocks register
+		
+		GameRegistry.registerBlock(Bloodstone, "Bloodstone");
+		GameRegistry.registerBlock(BloodBrick, "Bloodbrick");
+		GameRegistry.registerBlock(BloodyCobblestone, "Bloodycobblestone"); 
+		GameRegistry.registerBlock(BloodDirt, "BloodDirt");
+		GameRegistry.registerBlock(Bloodycoalore, "Bloodycoalore");
+		GameRegistry.registerBlock(Mythorore, "Mythorore");
+		GameRegistry.registerBlock(Bloodshardore, "Bloodshardore"); 
+		GameRegistry.registerBlock(ExpBlock, "ExpBlock");
+		GameRegistry.registerBlock(BloodstoneShardore, "BloodstoneShardore");
+		GameRegistry.registerBlock(BloodOvenIdle, "BloodOvenIdle");
+		GameRegistry.registerBlock(BloodOvenActive, "BloodOvenActive");
+		GameRegistry.registerBlock(BloodMixer, "BloodMixer");
+		GameRegistry.registerBlock(CorruptedDirt, "CorruptedDirt");
+		GameRegistry.registerBlock(BloodGrass, "BloodGrass");
+		GameRegistry.registerBlock(HolyBlock, "HolyBlock");
+		GameRegistry.registerBlock(SafeHolyBlock, "SafeHolyBlock");
+		
+		//Items register
+		
+		GameRegistry.registerItem(Bloodcoal, "Bloodcoal"); 
+		GameRegistry.registerItem(Bloodingot, "Bloodingot");
+		GameRegistry.registerItem(Bloodingotmix, "Bloodingotmix");
+		GameRegistry.registerItem(Mythoringot, "Mythoringot");
+		GameRegistry.registerItem(RawMythorOre, "RawMythorOre"); 
+		GameRegistry.registerItem(Bloodshard, "Bloodshard"); 
+		GameRegistry.registerItem(Blood, "Blood");
+		GameRegistry.registerItem(CowBlood, "CowBlood");
+		GameRegistry.registerItem(BottleOfBlood, "BottleOfBlood"); 		
+		GameRegistry.registerItem(InvisCloth, "InvisCloth");
+		GameRegistry.registerItem(Bloodfruit, "Bloodfruit");
+		GameRegistry.registerItem(Cookedbloodbeef, "Cookedbloodbeef");
+		GameRegistry.registerItem(Cookedbloodporkchop, "Cookedbloodporkchop");
+		GameRegistry.registerItem(Cookedbloodchicken, "Cookedbloodchicken");
+		GameRegistry.registerItem(SheepBlood, "SheepBlood");
+		GameRegistry.registerItem(ChickenBlood, "ChickenBlood");
+		GameRegistry.registerItem(Bloodapple, "Bloodapple");
+		GameRegistry.registerItem(CorruptedEssence, "CorruptedEssence");
+		GameRegistry.registerItem(CorruptedBlood, "CorruptedBlood");
+		
+		//Tools register
+		
+		GameRegistry.registerItem(Bloodaxe, "Bloodaxe");
+		GameRegistry.registerItem(Bloodpickaxe, "Bloodpickaxe");
+		GameRegistry.registerItem(Bloodsword, "Bloodsword");
+		GameRegistry.registerItem(Bloodhoe, "Bloodhoe");
+		GameRegistry.registerItem(Bloodshovel, "Bloodshovel");
+		GameRegistry.registerItem(Mythoraxe, "Mythoraxe");
+		GameRegistry.registerItem(Mythorpickaxe, "Mythorpickaxe");
+		GameRegistry.registerItem(Mythorsword, "Mythorsword");
+		GameRegistry.registerItem(Mythorhoe, "Mythorhoe");
+		GameRegistry.registerItem(Mythorshovel, "Mythorshovel");
+		GameRegistry.registerItem(Undeadsword, "Undeadsword");
+		GameRegistry.registerItem(Undeadpickaxe, "Undeadpickaxe");
+		GameRegistry.registerItem(Undeadaxe, "Undeadaxe");
+		GameRegistry.registerItem(Undeadshovel, "Undeadshovel");
+		GameRegistry.registerItem(Undeadhoe, "Undeadhoe");
+		GameRegistry.registerItem(Assassinblade, "Assassinblade");
+		GameRegistry.registerItem(InvisibleSword, "InvisibleSword");
+		GameRegistry.registerItem(Huntingknife, "Huntingknife");
+
+		
+		//Armor register
+		GameRegistry.registerItem(Bloodhelmet, "Bloodhelmet");
+		GameRegistry.registerItem(Bloodchestplate, "Bloodchestplate");
+		GameRegistry.registerItem(Bloodleggings, "Bloodleggings");
+		GameRegistry.registerItem(Bloodboots, "Bloodboots");
+		
+		GameRegistry.registerItem(Mythorhelmet, "Mythorhelmet");
+		GameRegistry.registerItem(Mythorchestplate, "Mythorchestplate");
+		GameRegistry.registerItem(Mythorleggings, "Mythorleggings");
+		GameRegistry.registerItem(Mythorboots, "Mythorboots");
+		
+		GameRegistry.registerItem(Invishelmet, "InvisHelmet");
+		GameRegistry.registerItem(Invischestplate, "InvisChestplate");
+		GameRegistry.registerItem(Invisleggings, "InvisLeggings");
+		GameRegistry.registerItem(Invisboots, "InvisBoots");
+		
+		GameRegistry.registerItem(Undeadhelmet, "Undeadhelmet");
+		GameRegistry.registerItem(Undeadchestplate, "Undeadchestplate");
+		GameRegistry.registerItem(Undeadleggings, "Undeadleggings");
+		GameRegistry.registerItem(Undeadboots, "Undeadboots");
+		
+		//Register World Generation
+		GameRegistry.registerWorldGenerator(VampZWorldGen, 5);
+	}
+	
+	@EventHandler
+	public void Init(FMLInitializationEvent event) {
+		
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+		
+		GameRegistry.registerTileEntity(TileEntityBloodOven.class, "BloodOven");
+		GameRegistry.registerTileEntity(TileEntityBloodMixer.class, "BloodMixer");
+		vampzProxy.registerRenderThings();	
+		
+		//Tools
+		
+		//Invisible
+		GameRegistry.addShapedRecipe(new ItemStack(InvisibleSword, 1), new Object[]
+		{"   ", "XSX", " X ", 'X', InvisCloth, 'S', Items.diamond_sword });
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Invishelmet, 1), new Object[]
+		{"XXX", "X X", "   ", 'X', InvisCloth });
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Invisleggings, 1), new Object[]
+		{"XXX", "X X", "X X", 'X', InvisCloth });
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Invischestplate, 1), new Object[]
+		{"X X", "XXX", "XXX", 'X', InvisCloth });
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Invisboots, 1), new Object[]
+		{"   ", "X X","X X",'X', InvisCloth,});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Invisboots, 1), new Object[]
+		{"X X", "X X","   ",'X', InvisCloth,});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Invishelmet, 1), new Object[]
+		{"   ", "XXX","X X",'X', InvisCloth,});
+		//Blood
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodaxe, 1), new Object[]		
+		{"XX ", "XS " ," S ",'X', Bloodingot, 'S', Item.itemRegistry.getObject("stick")});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodpickaxe, 1), new Object[]		
+		{"XXX", " S " ," S ",'X', Bloodingot, 'S', Item.itemRegistry.getObject("stick")});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodshovel, 1), new Object[]	
+		{" X ", " S " ," S ",'X', Bloodingot, 'S', Item.itemRegistry.getObject("stick")});
+
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodsword, 1), new Object[]	
+		{" X ", " X " ," S ",'X', Bloodingot, 'S', Item.itemRegistry.getObject("stick")});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodhoe, 1), new Object[]	
+		{"XX ", " S " ," S ",'X', Bloodingot, 'S', Item.itemRegistry.getObject("stick")});
+		
+		//Mythor 
+		GameRegistry.addShapedRecipe(new ItemStack(Mythoraxe, 1), new Object[]		
+		{"XX ", "XS " ," S ",'X', Mythoringot, 'S', Item.itemRegistry.getObject("stick")});
+				
+		GameRegistry.addShapedRecipe(new ItemStack(Mythorpickaxe, 1), new Object[]		
+		{"XXX", " S " ," S ",'X', Mythoringot, 'S', Item.itemRegistry.getObject("stick")});
+				
+		GameRegistry.addShapedRecipe(new ItemStack(Mythorshovel, 1), new Object[]	
+		{" X ", " S " ," S ",'X', Mythoringot, 'S', Item.itemRegistry.getObject("stick")});
+
+		GameRegistry.addShapedRecipe(new ItemStack(Mythorsword, 1), new Object[]	
+		{" X ", " X " ," S ",'X', Mythoringot, 'S', Item.itemRegistry.getObject("stick")});
+				
+		GameRegistry.addShapedRecipe(new ItemStack(Mythorhoe, 1), new Object[]	
+		{"XX ", " S " ," S ",'X', Mythoringot, 'S', Item.itemRegistry.getObject("stick")});
+		
+		//Armor 
+		//Blood
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodhelmet, 1), new Object[]
+		{"XXX", "X X","   ",'X', Bloodingot,});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodhelmet, 1), new Object[]
+		{"   ", "XXX","X X",'X', Bloodingot,});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodchestplate, 1), new Object[]
+		{"X X", "XXX","XXX",'X', Bloodingot,});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodleggings, 1), new Object[]
+		{"XXX", "X X","X X",'X', Bloodingot,});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodboots, 1), new Object[]
+		{"   ", "X X","X X",'X', Bloodingot,});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodboots, 1), new Object[]
+		{"X X", "X X","   ",'X', Bloodingot,});
+		
+		
+		//mythor
+		GameRegistry.addShapedRecipe(new ItemStack(Mythorhelmet, 1), new Object[]
+		{"XXX", "X X","   ",'X', Mythoringot,});
+				
+		GameRegistry.addShapedRecipe(new ItemStack(Mythorhelmet, 1), new Object[]
+		{"   ", "XXX","X X",'X', Mythoringot,});
+				
+		GameRegistry.addShapedRecipe(new ItemStack(Mythorchestplate, 1), new Object[]
+		{"X X", "XXX","XXX",'X', Mythoringot,});
+				
+		GameRegistry.addShapedRecipe(new ItemStack(Mythorleggings, 1), new Object[]
+		{"XXX", "X X","X X",'X', Mythoringot,});
+				
+		GameRegistry.addShapedRecipe(new ItemStack(Mythorboots, 1), new Object[]
+		{"   ", "X X","X X",'X', Mythoringot,});
+				
+		GameRegistry.addShapedRecipe(new ItemStack(Mythorboots, 1), new Object[]
+		{"X X", "X X","   ",'X', Mythoringot,});
+		
+		//Blocks
+		GameRegistry.addShapedRecipe(new ItemStack(Bloodcoal, 1), new Object[]
+		{" X ", "XSX"," X ",'X', Bloodshard, 'S', Items.coal});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(BloodBrick, 1), new Object[]
+		{"   ", " XX"," XX",'X', Bloodstone,});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(BloodBrick, 1), new Object[]
+		{" XX", " XX","   ",'X', Bloodstone,});
+		
+		GameRegistry.addShapedRecipe(new ItemStack(BloodOvenIdle, 1), new Object[]
+		{"CCC", "C C","XZX",'X', Bloodstone, 'Z', Blocks.glass_pane, 'C', BloodyCobblestone });
+		
+		GameRegistry.addShapedRecipe(new ItemStack(BloodMixer, 1), new Object[]
+		{"Z C", "XXX", "X X", 'X', Blocks.planks, 'Z', Blocks.stone, 'C', BottleOfBlood});
+		
+		
+		//Shapeless
+		GameRegistry.addShapelessRecipe(new ItemStack(Bloodingotmix, 1), new Object[]	
+		{Items.iron_ingot, Bloodcoal });
+		
+		GameRegistry.addShapelessRecipe(new ItemStack(BottleOfBlood, 1), new Object[]	
+		{Items.glass_bottle, Blood });
+			
+		
+		//Crafting Blocks
+		GameRegistry.addShapelessRecipe(new ItemStack(Bloodstone, 1), new Object[]
+		{Blocks.stone, Bloodcoal });
+		
+		GameRegistry.addShapelessRecipe(new ItemStack(BloodBrick, 1), new Object[]
+	    {Blocks.stonebrick, Bloodcoal });
+		
+		
+		//BloodSmelting
+		MainClass.addBloodSmelting(RawMythorOre, new ItemStack(Mythoringot, 1), 10);
+		MainClass.addBloodSmelting(Bloodingotmix, new ItemStack(Bloodingot, 1), 10);
+
+		//Handler Register
+		GameRegistry.registerFuelHandler(new FuelHandler());
+		
+	}
+}
+
+
+		
+		
+		
+		
+		
+		
+		
+	
+
+
