@@ -1,0 +1,34 @@
+package com.neosup.VampZ.handler;
+
+import com.neosup.VampZ.MainClass;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+public class DeathEvent {
+	
+	EntityPlayer player;
+	
+	public void Death(LivingDeathEvent event){
+		if(event.source.equals("player")){
+			
+			if(event.entity instanceof EntityCow){
+				if(event.entity.isDead && !event.entity.worldObj.isRemote){
+					EntityZombie entityzombie = new EntityZombie(event.entity.worldObj);					
+					entityzombie.copyLocationAndAnglesFrom(player);
+				    entityzombie.motionX = -2;				
+					event.entity.worldObj.spawnEntityInWorld(entityzombie);
+					
+				}
+			}
+		}	
+	}
+}
