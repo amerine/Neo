@@ -14,18 +14,24 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class DeathEvent {
-	
-	EntityPlayer player;
-	
+
+	private EntityPlayer EntityPlayer;
+
+	@SubscribeEvent
 	public void Death(LivingDeathEvent event){
 		if(event.source.equals("player")){
 			
 			if(event.entity instanceof EntityCow){
-				if(event.entity.isDead && !event.entity.worldObj.isRemote){
+				
+				if(!event.entity.worldObj.isRemote){
+					
+					if(event.entity.isDead){				
+					
 					EntityZombie entityzombie = new EntityZombie(event.entity.worldObj);					
-					entityzombie.copyLocationAndAnglesFrom(player);
+					entityzombie.copyLocationAndAnglesFrom(EntityPlayer);
 				    entityzombie.motionX = -2;				
 					event.entity.worldObj.spawnEntityInWorld(entityzombie);
+					}
 					
 				}
 			}
